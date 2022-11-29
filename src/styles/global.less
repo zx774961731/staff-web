@@ -68,10 +68,27 @@ body {
       background: #bfbfbf;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: var(--primary-color);
+      background: #165DFF;
     }
   }
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  display:none;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #6aa1ff;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #165DFF;
+  border-radius: 6px;
+}
+
 
 
 .clearfix::after {
@@ -134,6 +151,7 @@ body{
     .click-button{
       width: 140px;
       line-height: 60px;
+      margin-left: auto;
       .search-button{
       margin-right: 8px;
  }
@@ -141,6 +159,7 @@ body{
     .n-form-item{
       display: flex;
       .n-form-item-label{
+        display: block;
         width: 100px;
         line-height: 60px;
       }
