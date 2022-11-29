@@ -171,7 +171,11 @@
             <section class="left-detail-container f_l">
               <section class="clearfix">
                 <section class="w_30_p f_l">处理结果：</section>
-                <section class="w_60_p f_l">{{ state.orderDetail.result }}</section>
+                <section class="w_60_p f_l">
+                  <n-ellipsis :line-clamp="1">
+                    {{ state.orderDetail.result }}
+                  </n-ellipsis>
+                </section>
               </section>
             </section>
           </section>
@@ -310,53 +314,6 @@ const state = reactive({
       message: '请选择工单处理人',
     },
   },
-  // orderRecords: [
-  //   { // 创建工单
-  //     currentType: 1,
-  //     postUserName: '张三',
-  //     currentUserName: '李四',
-  //     nextUserName: '',
-  //     gmtCreate: '2022-01-01 22:22:22',
-  //     comments: '',
-  //     resultNode: ''
-  //   },
-  //   { // 转派
-  //     currentType: 2,
-  //     postUserName: '张三',
-  //     currentUserName: '李四',
-  //     nextUserName: '赵六',
-  //     gmtCreate: '2022-01-01 22:22:22',
-  //     comments: '李四转派给了赵六',
-  //     resultNode: ''
-  //   },
-  //   { // 评论
-  //     currentType: 3,
-  //     postUserName: '张三',
-  //     currentUserName: '赵六',
-  //     nextUserName: '',
-  //     gmtCreate: '2022-01-01 22:22:22',
-  //     comments: '赵六进行了评论',
-  //     resultNode: ''
-  //   },
-  //   { // 结单
-  //     currentType: 4,
-  //     postUserName: '张三',
-  //     currentUserName: '赵六',
-  //     nextUserName: '',
-  //     gmtCreate: '2022-01-01 22:22:22',
-  //     comments: '',
-  //     resultNode: '赵六结束了此单'
-  //   },
-  //   { // 撤单
-  //     currentType: 5,
-  //     postUserName: '王五',
-  //     currentUserName: '赵六',
-  //     nextUserName: '',
-  //     gmtCreate: '2022-01-01 22:22:22',
-  //     comments: '',
-  //     resultNode: ''
-  //   }
-  // ],
   showModal: false,
   comments: '',
 })
@@ -463,6 +420,8 @@ function onHandleQuestionType(type) {
       return '报障'
     case 3:
       return '解决方案'
+    case 4:
+      return '投诉'
   }
 }
 function onHandleContactType(type) {

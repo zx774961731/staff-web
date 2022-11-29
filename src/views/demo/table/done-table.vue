@@ -18,8 +18,8 @@
         <n-collapse-item title="更多" name="1"> </n-collapse-item>
       </n-collapse>
       <div class="click-button">
-        <n-button type="primary" class="search-button" @click="getList()">搜索</n-button>
-        <n-button strong secondary @click="restForm">取消</n-button>
+        <n-button type="primary" class="search-button" @click="getList()">查询</n-button>
+        <n-button strong secondary @click="restForm">重置</n-button>
       </div>
     </div>
     <div v-if="isShow" class="towLine">
@@ -47,7 +47,14 @@
       </n-form-item>
 
       <n-form-item class="datePicker" label="提交时间" path="submission">
-        <n-date-picker v-model:value="formValue.submission" type="datetimerange" clearable />
+        <n-date-picker
+          v-model:value="formValue.submission"
+          type="datetimerange"
+          clearable
+          start-placeholder="起始日期"
+          end-placeholder="结束日期"
+          :is-date-disabled="(time) => time > Date.now()"
+        />
       </n-form-item>
     </div>
   </n-form>
@@ -55,10 +62,10 @@
   <!-- <n-data-table :columns="columns" :data="data.records" :pagination="pagination" /> -->
   <n-data-table :columns="columns" :data="data.records || []" />
   <n-pagination
+    v-model:page="page.pageNo"
     :item-count="data.totalCount"
-    :page="page.pageNo"
     :page-size="page.pageSize"
-    :page-sizes="[1, 2, 20]"
+    :page-sizes="[10, 20, 50, 100]"
     :show-size-picker="true"
     :show-quick-jumper="true"
     @update:page="pageChange"
@@ -293,7 +300,7 @@ onMounted(() => {
 .product {
   position: absolute;
   z-index: 2000;
-  top: 34px;
+  top: 50px;
   width: 100%;
   height: 120px;
   background-color: #fff;

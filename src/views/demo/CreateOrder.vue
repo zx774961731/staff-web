@@ -33,12 +33,12 @@
       <section class="user-product-container clearfix">
         <section
           v-for="item in state.productListArr"
-          @click="onClickProduct(item)"
           :key="item.id"
           class="product-item f_l"
-          :class="{'is-checked': item.isChecked}"
+          :class="{ 'is-checked': item.isChecked }"
+          @click="onClickProduct(item)"
         >
-          <img :src="item.url" class="f_l" alt="product-img" width="200" height="50">
+          <img :src="item.url" class="f_l" alt="product-img" width="200" height="50" />
           <span class="f_l">{{ item.name }}</span>
         </section>
       </section>
@@ -47,12 +47,12 @@
           <section class="user-product-container clearfix">
             <section
               v-for="item in state.allProductListArr"
-              @click="onClickAllProduct(item)"
               :key="item.id"
               class="product-item f_l"
-              :class="{'is-checked': item.isChecked}"
+              :class="{ 'is-checked': item.isChecked }"
+              @click="onClickProduct(item)"
             >
-              <img :src="item.url" class="f_l" alt="product-img" width="200" height="50">
+              <img :src="item.url" class="f_l" alt="product-img" width="200" height="50" />
               <span class="f_l">{{ item.name }}</span>
             </section>
           </section>
@@ -85,6 +85,7 @@
             <n-radio value="1"> 问题咨询 </n-radio>
             <n-radio value="2"> 报障 </n-radio>
             <n-radio value="3"> 解决方案 </n-radio>
+            <n-radio value="4"> 投诉 </n-radio>
           </n-space>
         </n-radio-group>
       </n-form-item>
@@ -159,14 +160,7 @@
 <script setup>
 import { reactive, ref, watch, computed } from 'vue'
 import { submitOrder } from '@/api/zx'
-import {
-  generalOptions,
-  userOptions,
-  productList,
-  allProductList,
-  regexpEmail,
-  regexpPhone
-} from './constanst'
+import { generalOptions, userOptions, productList, allProductList, regexpEmail, regexpPhone } from './constanst'
 
 const staffValueLabel = {}
 generalOptions.forEach((item) => {
@@ -229,25 +223,25 @@ const state = reactive({
       {
         validator: regexpEmail,
         trigger: ['blur', 'input'],
-        message: '请输入正确的邮箱地址'
-      }
+        message: '请输入正确的邮箱地址',
+      },
     ],
     phone: [],
   },
   productListArr: [],
-  allProductListArr: []
+  allProductListArr: [],
 })
 state.productListArr = productList
 state.allProductListArr = allProductList
 
 const checkedProduct = computed(() => {
   let product = {}
-  state.productListArr.forEach(item => {
+  state.productListArr.forEach((item) => {
     if (item.isChecked) {
       product = item
     }
   })
-  state.allProductListArr.forEach(item => {
+  state.allProductListArr.forEach((item) => {
     if (item.isChecked) {
       product = item
     }
@@ -268,8 +262,8 @@ watch(
         {
           validator: regexpEmail,
           trigger: ['blur', 'input'],
-          message: '请输入正确的邮箱地址'
-        }
+          message: '请输入正确的邮箱地址',
+        },
       ]
       state.rules.phone = []
     } else if (_new === '2') {
@@ -283,8 +277,8 @@ watch(
         {
           validator: regexpPhone,
           trigger: ['blur', 'input'],
-          message: '请输入正确的手机号码'
-        }
+          message: '请输入正确的手机号码',
+        },
       ]
     }
   }
@@ -307,8 +301,7 @@ function onSubmit(e) {
   formRef.value?.validate((errors) => {
     if (!errors) {
       const params = {
-        staffUser: 'staff2',
-        staffUserName: '客服2',
+        product: checkedProduct.value.name,
         customerUser: state.model.customerUser,
         customerUserName: customerValueLabel[state.model.customerUser],
         questionType: state.model.questionType,
@@ -349,22 +342,21 @@ function onSubmit(e) {
   })
 }
 function onClickProduct(data) {
+  if (data.isChecked) {
+    data.isChecked = false
+    return
+  }
   onInitData()
-  data.isChecked = true
-}
-function onClickAllProduct(data) {
-  onInitData()
-  data.isChecked = true
+  data.isChecked = !data.isChecked
 }
 function onInitData() {
-  state.productListArr.forEach(item => {
+  state.productListArr.forEach((item) => {
     item.isChecked = false
   })
-  state.allProductListArr.forEach(item => {
+  state.allProductListArr.forEach((item) => {
     item.isChecked = false
   })
 }
-
 </script>
 
 <style lang="less" scoped>
@@ -394,7 +386,7 @@ function onInitData() {
       span {
         float: left;
         margin-top: -20px;
-        background-color: rgba(255,255,255,0.8);
+        background-color: rgba(255, 255, 255, 0.8);
         width: 200px;
         text-align: center;
         height: 20px;
