@@ -18,7 +18,7 @@
         <n-collapse-item title="更多" name="1"> </n-collapse-item>
       </n-collapse>
       <div class="click-button">
-        <n-button type="primary" class="search-button" @click="getList()">查询</n-button>
+        <n-button type="primary" class="search-button" @click="getList('search')">查询</n-button>
         <n-button strong secondary @click="restForm">重置</n-button>
       </div>
     </div>
@@ -43,7 +43,7 @@
       </n-form-item>
 
       <n-form-item label="工单提交人" path="postUserName">
-        <n-input v-model:value="formValue.postUserName" placeholder="输入工单编号" />
+        <n-input v-model:value="formValue.postUserName" placeholder="输入工单提交人" />
       </n-form-item>
 
       <n-form-item class="datePicker" label="提交时间" path="submission">
@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-import { getDoneList } from '@/api/zx'
+import { getDoneList } from '@/api'
 import dayjs from 'dayjs'
 import { h, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -255,7 +255,11 @@ const itemClick = () => {
   isShow.value = !isShow.value
 }
 
-const getList = async () => {
+const getList = async (type) => {
+  if (type) {
+    page.pageNo = 1
+    page.pageSize = 10
+  }
   const { submission } = formValue.value
   let submissionDate = {}
   if (submission) {

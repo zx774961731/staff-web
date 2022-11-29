@@ -17,7 +17,7 @@
         <n-collapse-item title="更多" name="1"> </n-collapse-item>
       </n-collapse>
       <div class="click-button">
-        <n-button type="primary" class="search-button" @click="getList()">查询</n-button>
+        <n-button type="primary" class="search-button" @click="getList('search')">查询</n-button>
         <n-button strong secondary @click="restForm">重置</n-button>
       </div>
     </div>
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { getToDoList } from '@/api/zx'
+import { getToDoList } from '@/api'
 import dayjs from 'dayjs'
 import { h, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -250,7 +250,11 @@ const itemClick = () => {
   isShow.value = !isShow.value
 }
 
-const getList = async () => {
+const getList = async (type) => {
+  if (type) {
+    page.pageNo = 1
+    page.pageSize = 10
+  }
   const { submission } = formValue.value
   let submissionDate = {}
   if (submission) {

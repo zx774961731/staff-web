@@ -159,7 +159,7 @@
 
 <script setup>
 import { reactive, ref, watch, computed } from 'vue'
-import { submitOrder } from '@/api/zx'
+import { submitOrder } from '@/api'
 import { generalOptions, userOptions, productList, allProductList, regexpEmail, regexpPhone } from './constanst'
 
 const staffValueLabel = {}

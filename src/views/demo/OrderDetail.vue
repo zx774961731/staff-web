@@ -62,6 +62,10 @@
               <section class="w_30_p f_l">提交时间：</section>
               <section class="w_60_p f_l">{{ onHandleTime(state.orderDetail.gmtCreate) }}</section>
             </section>
+            <section v-if="state.orderDetail.status === 2 || state.orderDetail.status === 3" class="clearfix">
+              <section class="w_30_p f_l">处理完成时间：</section>
+              <section class="w_60_p f_l">{{ onHandleTime(state.orderDetail.gmtModified) }}</section>
+            </section>
             <section class="clearfix">
               <template v-if="state.orderDetail.contactType == '1'">
                 <section class="w_30_p f_l">邮箱地址：</section>
@@ -282,7 +286,7 @@
 import { reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {} from 'naive-ui'
-import { queryOrderDetail, finishOrder, deliverOrder, commentOrder } from '@/api/zx'
+import { queryOrderDetail, finishOrder, deliverOrder, commentOrder } from '@/api'
 import dayjs from 'dayjs'
 import { ArrowBackOutline } from '@vicons/ionicons5'
 import { generalOptions } from './constanst'
@@ -453,7 +457,11 @@ function onHandleEmergency(type) {
   }
 }
 function onHandleTime(time) {
-  return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+  if (time) {
+    return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+  } else {
+    return dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss')
+  }
 }
 </script>
 
