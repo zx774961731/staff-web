@@ -5,35 +5,66 @@
       <n-step title="填写工单信息" />
     </n-steps>
   </section>
-  <section v-show="state.current === 1" class="choose-product">
-    <n-form
-      ref="formUserRef"
-      :model="state.model"
-      :rules="state.rules"
-      label-placement="top"
-      label-width="auto"
-      require-mark-placement="left"
-      :style="{
-        maxWidth: '640px',
-      }"
-    >
-      <n-form-item label="选择用户：" path="customerUser">
-        <n-select
-          v-model:value="state.model.customerUser"
-          placeholder="请选择用户"
-          :options="userOptions"
-          :style="{
-            width: '250px',
-          }"
-        />
-      </n-form-item>
-    </n-form>
+  <section v-show="state.current === 1">
+    <section class="choose-product">
+      <n-form
+        ref="formUserRef"
+        :model="state.model"
+        :rules="state.rules"
+        label-placement="top"
+        label-width="auto"
+        require-mark-placement="left"
+        :style="{
+          maxWidth: '640px',
+        }"
+      >
+        <n-form-item label="选择用户：" path="customerUser">
+          <n-select
+            v-model:value="state.model.customerUser"
+            placeholder="请选择用户"
+            :options="userOptions"
+            :style="{
+              width: '250px',
+            }"
+          />
+        </n-form-item>
+      </n-form>
+      <section class="m_b_20">用户订购的产品</section>
+      <section class="user-product-container clearfix">
+        <section
+          v-for="item in state.productListArr"
+          @click="onClickProduct(item)"
+          :key="item.id"
+          class="product-item f_l"
+          :class="{'is-checked': item.isChecked}"
+        >
+          <img :src="item.url" class="f_l" alt="product-img" width="200" height="50">
+          <span class="f_l">{{ item.name }}</span>
+        </section>
+      </section>
+      <n-collapse>
+        <n-collapse-item title="查看全部产品" name="1">
+          <section class="user-product-container clearfix">
+            <section
+              v-for="item in state.allProductListArr"
+              @click="onClickAllProduct(item)"
+              :key="item.id"
+              class="product-item f_l"
+              :class="{'is-checked': item.isChecked}"
+            >
+              <img :src="item.url" class="f_l" alt="product-img" width="200" height="50">
+              <span class="f_l">{{ item.name }}</span>
+            </section>
+          </section>
+        </n-collapse-item>
+      </n-collapse>
+    </section>
     <n-button type="info" class="f_r" @click="onNext"> 下一步 </n-button>
   </section>
   <section v-show="state.current === 2" class="form-container">
     <section class="user-product">
       <span>已选择用户：</span>{{ customerValueLabel[state.model.customerUser] }}
-      <span class="m_l_20">已选择产品：</span>产品A
+      <span class="m_l_20">已选择产品：</span>{{ checkedProduct.name }}
       <n-button quaternary type="info" class="m_l_20" @click="onPrevious"> 重新选择 </n-button>
     </section>
     <NDivider />
@@ -111,10 +142,10 @@
           </n-space>
         </n-radio-group>
       </n-form-item>
-      <n-form-item v-show="state.model.contactType === '1'" label="邮箱地址：" path="email">
+      <n-form-item v-show="state.model.contactType === '1'" label="邮箱地址：" path="email" first>
         <n-input v-model:value="state.model.email" placeholder="请输入邮箱地址" :style="{ width: '250px' }" />
       </n-form-item>
-      <n-form-item v-show="state.model.contactType === '2'" label="联系电话：" path="phone">
+      <n-form-item v-show="state.model.contactType === '2'" label="联系电话：" path="phone" first>
         <n-input v-model:value="state.model.phone" placeholder="请输入联系电话" :style="{ width: '250px' }" />
       </n-form-item>
       <div style="padding-left: 130px">
@@ -126,9 +157,16 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, computed } from 'vue'
 import { submitOrder } from '@/api/zx'
-import { generalOptions, userOptions } from './constanst'
+import {
+  generalOptions,
+  userOptions,
+  productList,
+  allProductList,
+  regexpEmail,
+  regexpPhone
+} from './constanst'
 
 const staffValueLabel = {}
 generalOptions.forEach((item) => {
@@ -182,28 +220,72 @@ const state = reactive({
       required: true,
       trigger: 'change',
     },
-    email: {
-      required: true,
-      trigger: ['blur', 'input'],
-      message: '请输入邮箱地址',
-    },
-    phone: {
-      required: false,
-      trigger: ['blur', 'input'],
-      message: '请输入联系电话',
-    },
+    email: [
+      {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: '请输入邮箱地址',
+      },
+      {
+        validator: regexpEmail,
+        trigger: ['blur', 'input'],
+        message: '请输入正确的邮箱地址'
+      }
+    ],
+    phone: [],
   },
+  productListArr: [],
+  allProductListArr: []
+})
+state.productListArr = productList
+state.allProductListArr = allProductList
+
+const checkedProduct = computed(() => {
+  let product = {}
+  state.productListArr.forEach(item => {
+    if (item.isChecked) {
+      product = item
+    }
+  })
+  state.allProductListArr.forEach(item => {
+    if (item.isChecked) {
+      product = item
+    }
+  })
+  return product
 })
 
 watch(
   () => state.model.contactType,
   (_new, _old) => {
     if (_new === '1') {
-      state.rules.email.required = true
-      state.rules.phone.required = false
+      state.rules.email = [
+        {
+          required: true,
+          trigger: ['blur', 'input'],
+          message: '请输入邮箱地址',
+        },
+        {
+          validator: regexpEmail,
+          trigger: ['blur', 'input'],
+          message: '请输入正确的邮箱地址'
+        }
+      ]
+      state.rules.phone = []
     } else if (_new === '2') {
-      state.rules.email.required = false
-      state.rules.phone.required = true
+      state.rules.email = []
+      state.rules.phone = [
+        {
+          required: true,
+          trigger: ['blur', 'input'],
+          message: '请输入联系电话',
+        },
+        {
+          validator: regexpPhone,
+          trigger: ['blur', 'input'],
+          message: '请输入正确的手机号码'
+        }
+      ]
     }
   }
 )
@@ -244,6 +326,7 @@ function onSubmit(e) {
           window.$message.success('提交成功')
           state.current = 1
           state.model = {
+            customerUser: null,
             questionType: '1',
             nextUser: null,
             emergencyDegree: '1',
@@ -254,6 +337,7 @@ function onSubmit(e) {
             email: '',
             phone: '',
           }
+          onInitData()
         })
         .catch((err) => {
           window.$message.error('提交失败')
@@ -264,6 +348,23 @@ function onSubmit(e) {
     }
   })
 }
+function onClickProduct(data) {
+  onInitData()
+  data.isChecked = true
+}
+function onClickAllProduct(data) {
+  onInitData()
+  data.isChecked = true
+}
+function onInitData() {
+  state.productListArr.forEach(item => {
+    item.isChecked = false
+  })
+  state.allProductListArr.forEach(item => {
+    item.isChecked = false
+  })
+}
+
 </script>
 
 <style lang="less" scoped>
@@ -271,6 +372,38 @@ function onSubmit(e) {
   padding: 20px;
   background-color: rgb(253 246 246);
   margin-bottom: 20px;
+}
+.choose-product {
+  padding: 0 20px;
+  font-size: 14px;
+  // height: 400px;
+  .user-product-container {
+    .product-item {
+      width: 200px;
+      height: 50px;
+      overflow: hidden;
+      margin-right: 50px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      &.is-checked {
+        border: 3px solid blue;
+      }
+      &:hover {
+        opacity: 0.8;
+      }
+      span {
+        float: left;
+        margin-top: -20px;
+        background-color: rgba(255,255,255,0.8);
+        width: 200px;
+        text-align: center;
+        height: 20px;
+        line-height: 20px;
+        color: black;
+        font-size: 12px;
+      }
+    }
+  }
 }
 .form-container {
   background-color: rgb(253 246 246);

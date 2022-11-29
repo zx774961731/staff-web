@@ -403,7 +403,6 @@ function onSubmit(e) {
       if (state.model.orderHandleType === '1') {
         finishOrder({
           ticketId: query.orderId,
-          currentUser: state.orderDetail?.currentUser || '',
           comments: state.model.handleResult,
         })
           .then((res) => {
@@ -416,7 +415,6 @@ function onSubmit(e) {
       } else if (state.model.orderHandleType === '2') {
         deliverOrder({
           ticketId: query.orderId,
-          currentUser: state.orderDetail?.currentUser || '',
           nextUser: state.model.orderTurnSend,
           comments: state.model.handleResult,
         })
@@ -444,7 +442,6 @@ function onConfirmCallback() {
   }
   commentOrder({
     ticketId: query.orderId,
-    currentUser: state.orderDetail?.currentUser || '',
     comments: state.comments,
   })
     .then((res) => {
