@@ -126,6 +126,7 @@ const data = ref({
   records: [],
 })
 const pageSizeChange = (pageSize) => {
+  page.pageNo = 1
   page.pageSize = pageSize
   getList()
 }
@@ -229,6 +230,7 @@ const columns = [
       return h(
         'a',
         {
+          class: 'detail',
           onClick: () => {
             console.log('跳转处理')
             router.push({

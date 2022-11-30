@@ -362,7 +362,7 @@ function onInitData() {
 <style lang="less" scoped>
 .top-step {
   padding: 20px;
-  background-color: rgb(253 246 246);
+  // background-color: rgb(253 246 246);
   margin-bottom: 20px;
 }
 .choose-product {
@@ -398,8 +398,8 @@ function onInitData() {
   }
 }
 .form-container {
-  background-color: rgb(253 246 246);
-  height: 900px;
+  // background-color: rgb(253 246 246);
+  // height: 900px;
   padding: 20px;
   .user-product {
     font-weight: bold;
