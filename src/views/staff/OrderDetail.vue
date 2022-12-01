@@ -371,7 +371,7 @@ function onSubmit(e) {
         deliverOrder({
           ticketId: query.orderId,
           nextUser: state.model.orderTurnSend,
-          comments: state.model.handleResult,
+          comments: state.model.comments,
         })
           .then((res) => {
             window.$message.success('提交成功')
