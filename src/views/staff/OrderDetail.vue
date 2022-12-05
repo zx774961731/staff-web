@@ -22,7 +22,7 @@
             </section>
             <section class="clearfix">
               <section class="w_30_p f_l">工单提交人：</section>
-              <section class="w_60_p f_l">{{ state.orderDetail.staffUserName }}</section>
+              <section class="w_60_p f_l">{{ state.orderDetail.postUserName }}</section>
             </section>
             <section class="clearfix">
               <section class="w_30_p f_l">通知方式：</section>
@@ -196,6 +196,10 @@
           <section>
             处理时间：
             <span>{{ onHandleTime(item.gmtCreate) }}</span>
+          </section>
+          <section>
+            备注：
+            <span>{{ item.comments }}</span>
           </section>
         </section>
         <section v-if="item.currentType === 2" class="order-record">
